@@ -36,6 +36,18 @@ The old Python export and interactive mode are outside this preview's scope.
 Run reviewed examples locally. This preview has limits on execution steps,
 function depth, and output, and has not been reviewed as a security sandbox.
 
+## Built-in helpers (v0.2)
+
+    sava "risk " + letra(91)        -- letra (letter): a number, vora/falsa or nul as text
+    sava lorga([35, 62, 91])        -- lorga (long): the length of a list or a text
+    x es [1, 2] + [3]               -- lists join with +
+
+"+" stays strict: text joins only with text, so "risk " + 91 is an error that tells you to use letra(...).
+Built-in names can't be redefined. A list holds at most 1,000 values.
+
+Limits are set by whoever runs the program (the host): run(source, steps=..., output=..., depth=...).
+From the command line, use --steps (default 10,000). python3 sigra.py --version prints the version.
+
 ## Sigra Wire
 
     python3 lina_sigra.py encode "Crème brûlée -12.5"

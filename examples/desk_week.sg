@@ -14,17 +14,15 @@ risks es [35, 62, 91, 48, 77]
 
 pauses es 0
 suma es 0
-norae i de 0 a 4:
+norae i de 0 a lorga(risks) - 1:
     choice es decide(risks[i])
     sava dias[i] + ": " + choice
     se choice = "PAUSE":
         pauses es pauses + 1
     suma es suma + risks[i]
 
-sava "days paused:"
-sava pauses
-sava "average risk:"
-sava suma / 5
+sava "days paused: " + letra(pauses) + " of " + letra(lorga(dias))
+sava "average risk: " + letra(suma / lorga(risks))
 
 -- tell another desk, as an exact Lina Sigra message
 pesa @kairo "Na sinta risk."

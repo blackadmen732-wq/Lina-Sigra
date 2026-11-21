@@ -24,6 +24,7 @@ BINDING = {
 }
 COMPARE = {"=", "!=", "<", ">", "<=", ">=", "en"}
 LITERALS = {"vora": True, "falsa": False, "nul": None}
+BUILTINS = {"letra": 1, "lorga": 1}         # built-in functions and how many inputs they take (letra = letter, lorga = long)
 RESERVED = set(LITERALS) | {
     "e", "o", "no", "se", "en", "es", "dela", "denova", "fora", "norae", "pasa", "pesa", "risa", "sava", "sigra",
 }
@@ -205,6 +206,8 @@ class Parser:
                 raise line.error("define functions at the top level")
             line.take("fora")
             name = line.name()
+            if name in BUILTINS:
+                raise line.error(f"{name!r} is a built-in function and can't be redefined")
             parameters = []
             if line.peek() == "toma":
                 line.take("toma")

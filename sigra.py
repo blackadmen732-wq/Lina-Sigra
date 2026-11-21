@@ -12,7 +12,10 @@ import operator
 from pathlib import Path
 import sys
 
-from sigra_parser import SigraError, parse
+from sigra_parser import BUILTINS, SigraError, parse
+
+VERSION = "0.2.0"
+MAX_LIST = 1_000
 from sigra_runtime import pesa, sigra
 
 
@@ -29,13 +32,14 @@ class ReturnValue(Exception):
 
 
 class Interpreter:
-    def __init__(self, read, write):
+    def __init__(self, read, write, steps=10_000, output=32_000, depth=24):
         self.read = read
         self.write = write
         self.globals = {}
         self.functions = {}
-        self.steps = 10_000
-        self.output_left = 32_000
+        self.steps = steps
+        self.output_left = output
+        self.max_depth = depth
         self.depth = 0
 
     def step(self, line):
@@ -50,6 +54,8 @@ class Interpreter:
             raise SigraError(line, "number must be finite")
         if isinstance(value, str) and len(value) > 4_000:
             raise SigraError(line, "text exceeds the preview size limit")
+        if isinstance(value, list) and len(value) > MAX_LIST:
+            raise SigraError(line, f"a list holds at most {MAX_LIST} values")
         return value
 
     def emit(self, line, value):
@@ -67,6 +73,10 @@ class Interpreter:
         if op in {"+", "-", "*", "/", "//", "%"}:
             if op == "+" and isinstance(left, str) and isinstance(right, str):
                 return self.limit_value(line, left + right)
+            if op == "+" and isinstance(left, list) and isinstance(right, list):
+                return self.limit_value(line, left + right)
+            if op == "+" and (isinstance(left, str) or isinstance(right, str)):
+                raise SigraError(line, "'+' joins text only with text; turn the number into text first with letra(...)")
             if type(left) not in (int, float) or type(right) not in (int, float):
                 raise SigraError(line, f"{op!r} requires numbers, or two texts for '+'")
         return self.limit_value(line, OPERATIONS[op](left, right))
@@ -123,13 +133,29 @@ class Interpreter:
         values = [self.evaluate(arg, scope, line) for arg in arguments]
         return self.call(name, values, line)
 
+    def builtin(self, name, values, line):
+        if len(values) != BUILTINS[name]:
+            raise SigraError(line, f"{name!r} expects {BUILTINS[name]} argument")
+        value = values[0]
+        if name == "letra":
+            if value is True or value is False or value is None:
+                return {True: "vora", False: "falsa", None: "nul"}[value]
+            if type(value) in (int, float, str):
+                return self.limit_value(line, str(value))
+            raise SigraError(line, "letra turns a number, true/false or nothing into text, not a list")
+        if not isinstance(value, (str, list)):
+            raise SigraError(line, "lorga gives the length of a list or a text")
+        return len(value)
+
     def call(self, name, values, line):
+        if name in BUILTINS:
+            return self.builtin(name, values, line)
         if name not in self.functions:
             raise SigraError(line, f"unknown function {name!r}")
         parameters, body = self.functions[name]
         if len(values) != len(parameters):
             raise SigraError(line, f"{name!r} expects {len(parameters)} arguments")
-        if self.depth >= 24:
+        if self.depth >= self.max_depth:
             raise SigraError(line, "program exceeded the function call depth")
         self.depth += 1
         try:
@@ -189,19 +215,23 @@ class Interpreter:
                 raise SigraError(statement.line, str(error)) from error
 
 
-def run(source, *, read=input, write=print):
-    """Parse and interpret one program, with I/O supplied by the caller."""
+def run(source, *, read=input, write=print, steps=10_000, output=32_000, depth=24):
+    """Parse and interpret one program, with I/O and limits supplied by the caller (the host)."""
     statements = parse(source)
-    interpreter = Interpreter(read, write)
+    interpreter = Interpreter(read, write, steps=steps, output=output, depth=depth)
     interpreter.block(statements, interpreter.globals)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--version", action="version", version=f"Sigra Code {VERSION}")
+    parser.add_argument("--steps", type=int, default=10_000, help="step budget (default 10000, at most 10000000)")
     parser.add_argument("program", type=Path)
     options = parser.parse_args()
+    if not 1 <= options.steps <= 10_000_000:
+        parser.error("--steps must be between 1 and 10000000")
     try:
-        run(options.program.read_text(encoding="utf-8"))
+        run(options.program.read_text(encoding="utf-8"), steps=options.steps)
     except (OSError, SigraError) as error:
         print(f"Sigra error: {error}", file=sys.stderr)
         return 1
