@@ -96,6 +96,12 @@ class CodeTests(unittest.TestCase):
         source = (ROOT / "examples" / "fibonacci.sg").read_text(encoding="utf-8")
         self.assertEqual(self.output(source), "0 1 1 2 3 5 8 13 21 34 55".split())
 
+    def test_desk_week_example(self):
+        output = self.output((ROOT / "examples" / "desk_week.sg").read_text(encoding="utf-8"))
+        self.assertEqual(output[:5], ["mon: RUN", "tue: WATCH", "wed: PAUSE", "thu: RUN", "fri: WATCH"])
+        self.assertEqual(output[5:9], ["days paused:", "1", "average risk:", "62.6"])
+        self.assertTrue(output[9].endswith("'reads_as': 'Na sinta risk.'}"))
+
     def test_sela_example(self):
         source = (ROOT / "examples" / "sela.sg").read_text(encoding="utf-8")
         output = self.output(source)

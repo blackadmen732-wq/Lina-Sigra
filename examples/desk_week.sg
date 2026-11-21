@@ -1,0 +1,30 @@
+-- Black Fox desk: check a week of risk readings and decide each day.
+-- fora = build a function, toma = taking, dela = give back, se / o se / o = if / else if / else
+
+fora decide toma risk:
+    se risk >= 80:
+        dela "PAUSE"
+    o se risk >= 50:
+        dela "WATCH"
+    o:
+        dela "RUN"
+
+dias es ["mon", "tue", "wed", "thu", "fri"]
+risks es [35, 62, 91, 48, 77]
+
+pauses es 0
+suma es 0
+norae i de 0 a 4:
+    choice es decide(risks[i])
+    sava dias[i] + ": " + choice
+    se choice = "PAUSE":
+        pauses es pauses + 1
+    suma es suma + risks[i]
+
+sava "days paused:"
+sava pauses
+sava "average risk:"
+sava suma / 5
+
+-- tell another desk, as an exact Lina Sigra message
+pesa @kairo "Na sinta risk."
