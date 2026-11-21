@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 Jahf Mark Aldonza
+# SPDX-License-Identifier: AGPL-3.0-only
 """Lina Sigra - turns Lina Eldoria (Eldorian) text into number codes and back.
 
 Usage:

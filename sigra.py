@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 Jahf Mark Aldonza
+# SPDX-License-Identifier: AGPL-3.0-only
 """Run a local Sigra program: python3 sigra.py PROGRAM.sg.
 
 Sigra Code preview. Review untrusted source before running it. This interpreter

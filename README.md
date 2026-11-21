@@ -61,5 +61,19 @@ identified by a saved receipt to replay it.
 
 ## License
 
-MIT, see `LICENSE`. This covers this repository only (Sigra Code, Sigra Wire and the word registry).
-EdgeBot, its strategies and its Decision Replay are not part of this grant.
+Copyright (c) 2026 Jahf Mark Aldonza.
+
+Licensed under the GNU Affero General Public License v3.0 only (AGPL-3.0-only); see `LICENSE`. In short:
+you may use, study, change and share this code; if you share it or a changed version, or run a changed version
+for others over a network, you must make the full source available under the same license, keep this copyright
+notice, and mark what you changed. The license also includes a patent grant.
+
+For a different license (for example, to use Lina Sigra inside a closed product), contact the copyright holder.
+
+This covers this repository only (Sigra Code, Sigra Wire and the word registry). EdgeBot, its strategies and
+its Decision Replay are not part of it.
+
+## Trademark
+
+"Lina Sigra", "Sigra Code" and "Sigra Wire" are trademarks of Jahf Mark Aldonza. The license covers the code,
+not the names: a changed version must not be presented as the official Lina Sigra.

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Jahf Mark Aldonza
+# SPDX-License-Identifier: AGPL-3.0-only
 import json
 from pathlib import Path
 import unittest

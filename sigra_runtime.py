@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Jahf Mark Aldonza
+# SPDX-License-Identifier: AGPL-3.0-only
 """Prepare and validate local Sigra Wire text packets."""
 
 from lina_sigra import NAME, NEW, NUM, WireError, check, decode, encode

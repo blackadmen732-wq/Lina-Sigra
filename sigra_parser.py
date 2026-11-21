@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Jahf Mark Aldonza
+# SPDX-License-Identifier: AGPL-3.0-only
 """Parse the Sigra Code grammar and keep original source positions."""
 import ast
 from dataclasses import dataclass, field
