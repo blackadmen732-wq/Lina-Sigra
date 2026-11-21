@@ -1,0 +1,37 @@
+-- Sela! A first Sigra program.
+nema es "Orion"
+sava "Sela, " + nema + "!"
+
+-- counting: norae = count
+norae i de 1 a 5:
+    sava i * i
+
+-- a function: fora = build, toma = take, dela = give
+fora suma toma a, b:
+    dela a + b
+
+sava suma(20, 22)
+
+-- if / else-if / else: se, o se, o
+mara es 7
+se mara > 10:
+    sava "multe mara"
+o se mara = 7:
+    sava "set!"
+o:
+    sava "pika mara"
+
+-- while: denova kana = again when
+n es 3
+denova kana n > 0 e vora:
+    sava n
+    n es n - 1
+
+-- lists work like Python
+ma_nara es ["Lirael", "Runa", "Vesper"]
+norae x en ma_nara:
+    sava "Sela " + x
+
+-- speak to machines: encode a sentence into Lina Sigra
+sigra "Mi ama Eldoria."
+pesa @starline "Ke vi sava Eldorian?"

@@ -1,0 +1,8 @@
+-- Fibonacci in Sigra
+fora fib toma n:
+    se n < 2:
+        dela n
+    dela fib(n - 1) + fib(n - 2)
+
+norae i de 0 a 10:
+    sava fib(i)
