@@ -58,3 +58,8 @@ The bundled registry matches EdgeBot's copy byte for byte. In Code, "es" assigns
 a value. In existing EdgeBot rules, "es" is the comparison word. The rules grammar
 and Decision Replay receipts stay with EdgeBot. Use the exact evaluator version
 identified by a saved receipt to replay it.
+
+## License
+
+MIT, see `LICENSE`. This covers this repository only (Sigra Code, Sigra Wire and the word registry).
+EdgeBot, its strategies and its Decision Replay are not part of this grant.
