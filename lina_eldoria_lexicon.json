@@ -1,10 +1,10 @@
 {
  "language": "Lina Eldoria (Eldorian, \"Common\")",
  "machine_layer": "Lina Sigra",
- "version": "Year 37 EF / s880",
+ "version": "Year 37 EF / s882 (Tekna + trading words added)",
  "note": "353-word working lexicon from the record (Appendix V-14) with the record fix map = mapa; codes are 4 digits: first digit = class",
  "classes": {
-  "0": "control: grammar markers + frame",
+  "0": "control: grammar markers 0001-0015, bot job tags 0101-0105, Tekna (machine, AI, robot words) 0201-0299, frame 0090-0099",
   "1": "grammar & everyday",
   "2": "greetings & social life",
   "3": "verbs",
@@ -2738,6 +2738,368 @@
    "english": "Lakemere",
    "class": 9,
    "category": "Name registry"
+  },
+  {
+   "code": "0101",
+   "eldorian": "dikta",
+   "english": "JOB 1 - COMMAND: the bot obeys it",
+   "class": 0,
+   "category": "Control (bot job tags)",
+   "tag_only": true
+  },
+  {
+   "code": "0102",
+   "eldorian": "vera",
+   "english": "JOB 2 - CHECK: the bot tests it before acting",
+   "class": 0,
+   "category": "Control (bot job tags)",
+   "tag_only": true
+  },
+  {
+   "code": "0103",
+   "eldorian": "valo",
+   "english": "JOB 3 - VALUE: a level, size, speed or time",
+   "class": 0,
+   "category": "Control (bot job tags)",
+   "tag_only": true
+  },
+  {
+   "code": "0104",
+   "eldorian": "sava",
+   "english": "JOB 4 - TALK: kept on the receipt, never obeyed",
+   "class": 0,
+   "category": "Control (bot job tags)",
+   "tag_only": true
+  },
+  {
+   "code": "0105",
+   "eldorian": "klava",
+   "english": "JOB 5 - LOCKED: refused, a bot can never order it",
+   "class": 0,
+   "category": "Control (bot job tags)",
+   "tag_only": true
+  },
+  {
+   "code": "0201",
+   "eldorian": "tekna",
+   "english": "technology",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0202",
+   "eldorian": "maka",
+   "english": "machine",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0203",
+   "eldorian": "roba",
+   "english": "robot",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0204",
+   "eldorian": "menor",
+   "english": "AI; thinking machine (mena think + -or)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0205",
+   "eldorian": "vanta",
+   "english": "agent; a bot sent to act for someone",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0206",
+   "eldorian": "tenor",
+   "english": "owner; the human a bot answers to (tena have + -or)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0207",
+   "eldorian": "modela",
+   "english": "model (a trained AI)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0208",
+   "eldorian": "neura",
+   "english": "neuron",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0209",
+   "eldorian": "gravo",
+   "english": "weight (inside a model)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0210",
+   "eldorian": "cipa",
+   "english": "chip (say CHEE-pa)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0211",
+   "eldorian": "memo",
+   "english": "memory",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0212",
+   "eldorian": "dato",
+   "english": "data",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0213",
+   "eldorian": "koda",
+   "english": "code",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0214",
+   "eldorian": "progra",
+   "english": "program",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0215",
+   "eldorian": "sensa",
+   "english": "sensor",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0216",
+   "eldorian": "motora",
+   "english": "motor",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0217",
+   "eldorian": "batera",
+   "english": "battery",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0218",
+   "eldorian": "kelia",
+   "english": "training (kela learn + -ia)",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0219",
+   "eldorian": "testa",
+   "english": "test",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0220",
+   "eldorian": "eror",
+   "english": "error",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0221",
+   "eldorian": "diara",
+   "english": "log; record of what a bot did",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0222",
+   "eldorian": "resiva",
+   "english": "receipt; signed proof of an action",
+   "class": 0,
+   "category": "Tekna - Machine and AI"
+  },
+  {
+   "code": "0223",
+   "eldorian": "dikta",
+   "english": "command; an order a bot may obey",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0224",
+   "eldorian": "lansa",
+   "english": "start; launch",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0225",
+   "eldorian": "halta",
+   "english": "stop",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0226",
+   "eldorian": "pausa",
+   "english": "pause",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0227",
+   "eldorian": "rinova",
+   "english": "reset; start fresh",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0228",
+   "eldorian": "salva",
+   "english": "save",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0229",
+   "eldorian": "sinka",
+   "english": "sync",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0230",
+   "eldorian": "skana",
+   "english": "scan",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0231",
+   "eldorian": "kalka",
+   "english": "calculate",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0232",
+   "eldorian": "preda",
+   "english": "predict",
+   "class": 0,
+   "category": "Tekna - Actions"
+  },
+  {
+   "code": "0233",
+   "eldorian": "klava",
+   "english": "locked; refused to every bot",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0234",
+   "eldorian": "permi",
+   "english": "permission",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0235",
+   "eldorian": "limita",
+   "english": "limit",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0236",
+   "eldorian": "aleta",
+   "english": "alert; warning",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0237",
+   "eldorian": "trema",
+   "english": "fear",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0238",
+   "eldorian": "novia",
+   "english": "news (nova new + -ia)",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "0239",
+   "eldorian": "fila",
+   "english": "streak; in a row",
+   "class": 0,
+   "category": "Tekna - Safety"
+  },
+  {
+   "code": "8032",
+   "eldorian": "karta",
+   "english": "fourth; a quarter (un karta = one quarter)",
+   "class": 8,
+   "category": "Numbers, quantity and time"
+  },
+  {
+   "code": "0240",
+   "eldorian": "gania",
+   "english": "profit; money made on paper (gana + -ia)",
+   "class": 0,
+   "category": "Tekna - Trading"
+  },
+  {
+   "code": "0241",
+   "eldorian": "perdia",
+   "english": "loss; money lost on paper (perda + -ia)",
+   "class": 0,
+   "category": "Tekna - Trading"
+  },
+  {
+   "code": "0242",
+   "eldorian": "vinsa",
+   "english": "win; a trade that ended up",
+   "class": 0,
+   "category": "Tekna - Trading"
+  },
+  {
+   "code": "0243",
+   "eldorian": "kosta",
+   "english": "cost; fees and slippage",
+   "class": 0,
+   "category": "Tekna - Trading"
+  },
+  {
+   "code": "0244",
+   "eldorian": "talia",
+   "english": "size; how big a trade is",
+   "class": 0,
+   "category": "Tekna - Trading"
+  },
+  {
+   "code": "0245",
+   "eldorian": "pozia",
+   "english": "open trade; a position still running",
+   "class": 0,
+   "category": "Tekna - Trading"
   }
  ]
 }

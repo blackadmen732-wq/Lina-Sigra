@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(HERE, "lina_eldoria_lexicon.json"), encoding="utf-8") as lexicon:
     DATA = json.load(lexicon)
 ENTRIES = DATA["entries"]
-BY_WORD = {e["eldorian"].lower(): e for e in ENTRIES if e["class"] != 9 and e["eldorian"] not in "#@*,."}
+BY_WORD = {e["eldorian"].lower(): e for e in ENTRIES if e["class"] != 9 and not e.get("tag_only") and e["eldorian"] not in "#@*,."}
 BY_CODE = {e["code"]: e for e in ENTRIES}
 NAMES = sorted((e for e in ENTRIES if e["class"] == 9), key=lambda e: -len(e["eldorian"]))
 ALIASES = {"eldorian": "Lina Eldoria", "orion": "Orion Mark Voss"}  # short forms -> registry
