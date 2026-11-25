@@ -10,9 +10,11 @@ Goal: turn the preview into a complete, trustworthy language with three parts th
 
 Each phase ends with something that works and is tested. Nothing moves on with failing tests.
 
-## Where it stands (Nov 21, 2026)
+## Where it stands (Nov 25, 2026)
 
-- 16 tests pass. Coverage: parser 87%, interpreter 80%, wire 76%, packets 95%.
+- 30 tests pass. Coverage figures below are from Nov 21 and were not re-measured: parser 87%, interpreter 80%, wire 76%, packets 95%.
+- Nov 25 local attack pass: wire messages capped at 64,000 characters, NUL stripped before encoding, a crash on a trailing NEW marker fixed, `risa` refuses non-text host values. Each has a regression test.
+- Nov 25 speed pass: the same programs, the same output and the same step counts. Roughly 1.4–1.75x faster on loops, recursion and lists.
 - Stress test: 6,000 random broken programs and 4,000 random broken messages, with zero raw crashes.
 - Escape attempts (Python, files, internals) are all refused.
 - Licence AGPL-3.0, copyright Jahf Mark Aldonza; trademark notice in the README.
@@ -36,7 +38,7 @@ Each phase ends with something that works and is tested. Nothing moves on with f
 | 13 | Error messages are English only | Code | 2 |
 | 14 | `risa` (read) only gives text, so numbers from input need converting | Code | 2 |
 | 15 | No error handling (`try`) | Code | 2 |
-| 16 | The interpreter has never had an outside security review | Code | 3 |
+| 16 | The interpreter has never had an outside security review (a local attack pass was done Nov 25, but that is not an outside review) | Code | 3 |
 | 17 | The Rules engine lives in EdgeBot, while Code and Wire live here, with two copies of the codec | Rules + Wire | 3 |
 | 18 | Receipts aren't chained or signed | Rules | 3 |
 | 19 | Replay isn't run daily, and there's no approval step before a rule goes live | Rules | 3 |
@@ -124,5 +126,5 @@ Each phase ends with something that works and is tested. Nothing moves on with f
 
 ## Honest limits
 
-- The interpreter is written in Python and walks its own tree, so it's slow next to real languages. That's fine for rules and small programs, not for heavy number crunching.
+- The interpreter is written in Python and walks its own tree, so it's slow next to real languages (the Nov 25 pass made it about 1.4–1.75x faster, not more). That's fine for rules and small programs, not for heavy number crunching.
 - Being correct and safe doesn't make people use it. Adoption depends on the Black Fox proof and the demo.

@@ -7,7 +7,7 @@ import unittest
 from lina_sigra import WireError, check, decode, encode
 from sigra import run
 from sigra_parser import SigraError
-from sigra_runtime import pesa, verify_packet
+from sigra_runtime import _unknown_words, pesa, verify_packet
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -52,6 +52,17 @@ class WireTests(unittest.TestCase):
         malformed = "1001 0099"
         self.assertFalse(verify_packet({**packet, "codes": malformed, "check": check(malformed)}))
         self.assertFalse(verify_packet({**packet, "wire_version": "crc32-v1"}))
+
+    def test_size_cap_keeps_real_packets_and_blocks_huge_ones(self):
+        self.assertTrue(verify_packet(pesa("bot", "a," * 2000)))
+        self.assertTrue(verify_packet(pesa("bot", "a" * 3999)))
+        self.assertFalse(verify_packet({"wire_version": "crc16-ccitt-v1", "codes": "0001 " * 500_000, "check": 1}))
+        with self.assertRaises(WireError):
+            decode(["0001"] * 70_000 + ["0098", "0099"])
+
+    def test_trailing_new_marker_and_nul_injection(self):
+        _unknown_words(["0092"])
+        self.assertNotIn("0091", encode("\x000001\x00"))
 
 
 class WireToolTests(unittest.TestCase):
@@ -119,6 +130,15 @@ class CodeTests(unittest.TestCase):
     def test_loop_ends_at_step_limit(self):
         with self.assertRaisesRegex(SigraError, "exhausted its step budget"):
             run("denova kana vora:\n    pasa")
+
+    def test_exact_step_budget(self):
+        # pins step accounting so speed work can't silently change limits
+        src = "n es 0\ndenova kana n < 3:\n    n es n + 1\nsava n\n"
+        out = []
+        run(src, steps=29, write=out.append)
+        self.assertEqual(out, ["3"])
+        with self.assertRaisesRegex(SigraError, "exhausted its step budget"):
+            run(src, steps=28, write=[].append)
 
     def test_recursion_ends_at_depth_limit(self):
         with self.assertRaisesRegex(SigraError, "exceeded the function call depth"):
@@ -227,6 +247,16 @@ class CodeTests(unittest.TestCase):
         self.assertEqual(output[0], "Sela, Orion!")
         self.assertIn("42", output)
         self.assertIn("wire_version", output[-1])
+
+    def test_risa_rejects_non_text_and_eof(self):
+        for value in ({}, [], None, 5):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(SigraError, "risa expects text"):
+                    run("risa x", read=lambda: value, write=lambda s: None)
+        def eof():
+            raise EOFError
+        with self.assertRaisesRegex(SigraError, "no more input"):
+            run("risa x", read=eof, write=lambda s: None)
 
 
 if __name__ == "__main__":

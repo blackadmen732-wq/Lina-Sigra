@@ -24,6 +24,7 @@ ALIASES = dict(sorted(ALIASES.items(), key=lambda kv: -len(kv[0])))
 
 NUM, NAME, NEW, COMMA, STOP, END = "0090", "0091", "0092", "0097", "0098", "0099"
 NUMBER = re.compile(r"-?\d+(?:\.\d+)?")
+MAX_WIRE = 64_000  # 4,000 chars of text encode to at most ~20k wire chars; this leaves headroom
 
 
 class WireError(ValueError):
@@ -46,6 +47,8 @@ def strict_decode(codes):
         codes = codes.split()
     if not isinstance(codes, list) or any(not isinstance(code, str) for code in codes):
         raise WireError("expected wire token text or a list of strings")
+    if sum(map(len, codes)) + len(codes) > MAX_WIRE:
+        raise WireError(f"message is longer than {MAX_WIRE} characters")
     if not codes or codes[-1] != END:
         raise WireError("message has no end marker (0099)")
     i = 0
@@ -83,7 +86,8 @@ def decode(codes):
 
 
 def encode(text):
-    text = unicodedata.normalize("NFC", text)
+    # NUL marks name codes below; a NUL in the input could smuggle in a fake name
+    text = unicodedata.normalize("NFC", text).replace("\x00", " ")
     out = []
     for sentence in re.split(r"(?<=[.!?])\s+", text.strip()):
         if not sentence:

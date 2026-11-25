@@ -24,6 +24,9 @@ OPERATIONS = {
     "//": operator.floordiv, "%": operator.mod, "=": operator.eq, "!=": operator.ne,
     "<": operator.lt, ">": operator.gt, "<=": operator.le, ">=": operator.ge,
 }
+ARITHMETIC = frozenset({"+", "-", "*", "/", "//", "%"})
+NUMBERS = (int, float)
+isfinite = math.isfinite
 
 
 class ReturnValue(Exception):
@@ -41,11 +44,6 @@ class Interpreter:
         self.output_left = output
         self.max_depth = depth
         self.depth = 0
-
-    def step(self, line):
-        self.steps -= 1
-        if self.steps < 0:
-            raise SigraError(line, "program exhausted its step budget")
 
     def limit_value(self, line, value):
         if type(value) is int and value.bit_length() > 256:
@@ -66,72 +64,82 @@ class Interpreter:
         self.write(output)
 
     def binary(self, op, left, right, line):
+        function = OPERATIONS.get(op)
+        if function is not None and type(left) in NUMBERS and type(right) in NUMBERS:
+            # fast path: number with number, same checks as limit_value for numeric results
+            result = function(left, right)
+            kind = type(result)
+            if kind is int and result.bit_length() > 256:
+                raise SigraError(line, "integer exceeds the preview size limit")
+            if kind is float and not isfinite(result):
+                raise SigraError(line, "number must be finite")
+            return result
         if op == "en":
             if not isinstance(right, (str, list)):
                 raise SigraError(line, "'en' expects a list or text on the right")
             return left in right
-        if op in {"+", "-", "*", "/", "//", "%"}:
+        if op in ARITHMETIC:
             if op == "+" and isinstance(left, str) and isinstance(right, str):
                 return self.limit_value(line, left + right)
             if op == "+" and isinstance(left, list) and isinstance(right, list):
                 return self.limit_value(line, left + right)
             if op == "+" and (isinstance(left, str) or isinstance(right, str)):
                 raise SigraError(line, "'+' joins text only with text; turn the number into text first with letra(...)")
-            if type(left) not in (int, float) or type(right) not in (int, float):
+            if type(left) not in NUMBERS or type(right) not in NUMBERS:
                 raise SigraError(line, f"{op!r} requires numbers, or two texts for '+'")
-        return self.limit_value(line, OPERATIONS[op](left, right))
+        return self.limit_value(line, function(left, right))
 
     def evaluate(self, node, scope, line):
-        self.step(line)
-        kind, *args = node
-        if kind == "literal":
-            return self.limit_value(line, args[0])
+        self.steps -= 1
+        if self.steps < 0:
+            raise SigraError(line, "program exhausted its step budget")
+        kind = node[0]
         if kind == "name":
-            name = args[0]
+            name = node[1]
             if name in scope:
                 return scope[name]
             if name in self.globals:
                 return self.globals[name]
             raise SigraError(line, f"unknown name {name!r}")
-        if kind == "unary":
-            op, expr = args
-            value = self.evaluate(expr, scope, line)
-            if op == "no":
-                return not value
-            if type(value) not in (int, float):
-                raise SigraError(line, f"{op!r} requires a number")
-            return value if op == "+" else -value
         if kind == "binary":
-            op, left_node, right_node = args
-            left = self.evaluate(left_node, scope, line)
+            op = node[1]
+            left = self.evaluate(node[2], scope, line)
             if op == "e":
-                return left and self.evaluate(right_node, scope, line)
+                return left and self.evaluate(node[3], scope, line)
             if op == "o":
-                return left or self.evaluate(right_node, scope, line)
-            return self.binary(op, left, self.evaluate(right_node, scope, line), line)
+                return left or self.evaluate(node[3], scope, line)
+            return self.binary(op, left, self.evaluate(node[3], scope, line), line)
+        if kind == "literal":
+            return self.limit_value(line, node[1])
         if kind == "compare":
-            first, tests = args
-            left = self.evaluate(first, scope, line)
-            for op, right_node in tests:
+            left = self.evaluate(node[1], scope, line)
+            for op, right_node in node[2]:
                 right = self.evaluate(right_node, scope, line)
                 if not self.binary(op, left, right, line):
                     return False
                 left = right
             return True
+        if kind == "unary":
+            op = node[1]
+            value = self.evaluate(node[2], scope, line)
+            if op == "no":
+                return not value
+            if type(value) not in NUMBERS:
+                raise SigraError(line, f"{op!r} requires a number")
+            return value if op == "+" else -value
         if kind == "list":
-            values = [self.evaluate(item, scope, line) for item in args[0]]
+            values = [self.evaluate(item, scope, line) for item in node[1]]
             if any(isinstance(item, list) for item in values):
                 raise SigraError(line, "the preview supports lists of scalar values")
             return values
         if kind == "index":
-            value = self.evaluate(args[0], scope, line)
-            index = self.evaluate(args[1], scope, line)
+            value = self.evaluate(node[1], scope, line)
+            index = self.evaluate(node[2], scope, line)
             if not isinstance(value, (str, list)) or type(index) is not int:
                 raise SigraError(line, "index expects text or a list and a whole number")
             return value[index]
-        name, arguments = args
-        values = [self.evaluate(arg, scope, line) for arg in arguments]
-        return self.call(name, values, line)
+        values = [self.evaluate(arg, scope, line) for arg in node[2]]
+        return self.call(node[1], values, line)
 
     def builtin(self, name, values, line):
         if len(values) != BUILTINS[name]:
@@ -181,7 +189,13 @@ class Interpreter:
                 value = sigra(value) if kind == "sigra" else pesa(args[0], value)
             self.emit(line, value)
         elif kind == "risa":
-            scope[args[0]] = self.limit_value(line, self.read())
+            try:
+                value = self.read()
+            except EOFError:
+                raise SigraError(line, "no more input") from None
+            if type(value) is not str:  # the host must hand over text, never Python objects
+                raise SigraError(line, "risa expects text from the host")
+            scope[args[0]] = self.limit_value(line, value)
         elif kind == "se":
             condition = self.evaluate(args[0], scope, line)
             self.block(statement.body if condition else statement.otherwise, scope)
@@ -206,7 +220,9 @@ class Interpreter:
 
     def block(self, statements, scope):
         for statement in statements:
-            self.step(statement.line)
+            self.steps -= 1
+            if self.steps < 0:
+                raise SigraError(statement.line, "program exhausted its step budget")
             try:
                 self.execute(statement, scope)
             except SigraError:
