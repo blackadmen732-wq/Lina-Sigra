@@ -131,6 +131,15 @@ class CodeTests(unittest.TestCase):
         with self.assertRaisesRegex(SigraError, "exhausted its step budget"):
             run("denova kana vora:\n    pasa")
 
+    def test_exact_step_budget(self):
+        # pins step accounting so speed work can't silently change limits
+        src = "n es 0\ndenova kana n < 3:\n    n es n + 1\nsava n\n"
+        out = []
+        run(src, steps=29, write=out.append)
+        self.assertEqual(out, ["3"])
+        with self.assertRaisesRegex(SigraError, "exhausted its step budget"):
+            run(src, steps=28, write=[].append)
+
     def test_recursion_ends_at_depth_limit(self):
         with self.assertRaisesRegex(SigraError, "exceeded the function call depth"):
             run("fora spin:\n    dela spin()\nsava spin()")
