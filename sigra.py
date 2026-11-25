@@ -181,7 +181,13 @@ class Interpreter:
                 value = sigra(value) if kind == "sigra" else pesa(args[0], value)
             self.emit(line, value)
         elif kind == "risa":
-            scope[args[0]] = self.limit_value(line, self.read())
+            try:
+                value = self.read()
+            except EOFError:
+                raise SigraError(line, "no more input") from None
+            if type(value) is not str:  # the host must hand over text, never Python objects
+                raise SigraError(line, "risa expects text from the host")
+            scope[args[0]] = self.limit_value(line, value)
         elif kind == "se":
             condition = self.evaluate(args[0], scope, line)
             self.block(statement.body if condition else statement.otherwise, scope)
